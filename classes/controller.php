@@ -445,7 +445,7 @@ class controller {
      * @param int $course
      * @throws moodle_exception
      */
-    public function backup_section(int $sectionid, ?string $sectionname, bool $userdata, int $course, bool $anonymize): void {
+    public function backup_section(int $sectionid, ?string $sectionname, bool $userdata, int $course, bool $anonymize, string $path = ''): void {
         global $DB, $USER;
 
         $itemids = array();
@@ -548,6 +548,7 @@ class controller {
             }
 
             // Move backup files to folder
+            $foldername = empty($path) ? $foldername : $path . '/' . $foldername;
             foreach ($itemids as $itemid) {
                 $this->movedir($itemid, $foldername);
             }
@@ -567,6 +568,15 @@ class controller {
             }
 
             throw $ex;
+        }
+
+        $format = course_get_format($section->course);
+        // If this is flexsections course format, copy subsections.
+        if ($format instanceof \format_flexsections) {
+            $subsections = $format->get_subsections($section->section);
+            foreach ($subsections as $subsection) {
+                $this->backup_section((int)$subsection->id, shorten_text($format->get_section_name($subsection), 24), $userdata, $course, $anonymize, $foldername);
+            }
         }
     }
 

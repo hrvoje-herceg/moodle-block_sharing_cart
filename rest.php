@@ -93,7 +93,7 @@ try {
                 $courseid = required_param('courseid', PARAM_INT);
                 $section = section::get($courseid, $sectionnumber);
                 $sectionid = $section->id;
-                $sectionname = $section->name;
+                $sectionname = shorten_text(get_section_name($courseid, $sectionnumber), 24);
             }
             $userdata = required_param('userdata', PARAM_BOOL);
             $anonymize = required_param('anonymize', PARAM_BOOL);
