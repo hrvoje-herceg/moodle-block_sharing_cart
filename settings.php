@@ -73,4 +73,13 @@ if ($ADMIN->fulltree) {
             1,
         )
     );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'block_sharing_cart/show_directories_last',
+            get_string('settings:show_directories_last', 'block_sharing_cart'),
+            get_string('settings:show_directories_last_desc', 'block_sharing_cart'),
+            0,
+        )
+    );
 }

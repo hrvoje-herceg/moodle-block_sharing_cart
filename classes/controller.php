@@ -142,14 +142,15 @@ class controller {
         }
 
         // sort tree nodes and leaves
-        $sort_node = static function(array &$node) use (&$sort_node) {
-            uksort($node, static function($lhs, $rhs) {
-                // items follow directory
+        $showdirslast = get_config('block_sharing_cart', 'show_directories_last');
+        $sort_node = static function(array &$node) use (&$sort_node, $showdirslast) {
+            uksort($node, static function($lhs, $rhs) use ($showdirslast) {
+                // Items first, then directories
                 if ($lhs === '') {
-                    return +1;
+                    return $showdirslast == 1 ? -1 : 1;
                 }
                 if ($rhs === '') {
-                    return -1;
+                    return $showdirslast == 1 ? 1 : -1;
                 }
                 return strnatcasecmp($lhs, $rhs);
             });
