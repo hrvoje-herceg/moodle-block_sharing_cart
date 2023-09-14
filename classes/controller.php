@@ -840,6 +840,28 @@ class controller {
             ]
         ]);
         $event->trigger();
+
+        // If this is flexsections course format, restore subdirectories as subsections.
+        $format = course_get_format($courseid);
+        if ($format instanceof \format_flexsections) {
+            $params = [
+                'tree' => $DB->sql_like_escape($path) . '/%',
+                'userid' => $USER->id,
+            ];
+            // Find uniqie direct subdirectories.
+            $folders = $DB->get_recordset_select(record::TABLE, 'userid = :userid AND tree LIKE :tree',
+                $params, '', 'DISTINCT tree, section');
+            foreach ($folders as $folder) {
+                $matches = [];
+                $pattern = '/^' . preg_quote($path, '/') . '\/([^\/]+)$/';
+                if (preg_match($pattern, $folder->tree, $matches)) {
+                    // Create subsection "$matches[1]" and restore path $matches[0] into it.
+                    $newsubsection = $format->create_new_section($sectionnumber);
+                    $overwritesubsectionid = ($overwritesectionid > 0) ? (int) $folder->section : 0;
+                    $this->restore_directory($matches[0], $courseid, $newsubsection, $overwritesubsectionid);
+                }
+            }
+        }
     }
 
     /**
