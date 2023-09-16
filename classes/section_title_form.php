@@ -50,6 +50,7 @@ class section_title_form extends \moodleform {
     }
 
     public function definition(): void {
+        global $DB, $USER;
         $current_section_name = get_section_name($this->courseid, $this->sectionnumber);
 
         $mform =& $this->_form;
@@ -65,10 +66,27 @@ class section_title_form extends \moodleform {
 
         $mform->addElement('static', 'description', '', get_string('conflict_description', 'block_sharing_cart'));
 
-        $mform->addElement('radio', 'overwrite', get_string('conflict_no_overwrite', 'block_sharing_cart', $current_section_name), null, 0);
+        $conflictnooverwrite = 'conflict_no_overwrite';
+        $conflictoverwritetitle = 'conflict_overwrite_title';
+
+        $format = course_get_format($this->courseid);
+        if ($format instanceof \format_flexsections) {
+            // Count items in subdirs (excluding current dir).
+            $params = [
+                'tree' => $DB->sql_like_escape($this->target) . '/%',
+                'userid' => $USER->id,
+            ];
+            $items_count = $DB->count_records_select('block_sharing_cart', "userid = :userid AND tree LIKE :tree", $params);
+            if ($items_count > 0) {
+                $conflictnooverwrite = 'conflict_no_overwrite_subsections';
+                $conflictoverwritetitle = 'conflict_overwrite_title_subsections';
+            }
+        }
+
+        $mform->addElement('radio', 'overwrite', get_string($conflictnooverwrite, 'block_sharing_cart', $current_section_name), null, 0);
 
         foreach ($this->sections as $section) {
-            $option_title = get_string('conflict_overwrite_title', 'block_sharing_cart', $section->name);
+            $option_title = get_string($conflictoverwritetitle, 'block_sharing_cart', $section->name);
             $option_title .= ($section->summary != null) ? '<br><div class="small"><strong>'.get_string('summary').':</strong> '.strip_tags($section->summary).'</div>' : '';
             $mform->addElement('radio', 'overwrite', $option_title, null, $section->id);
         }

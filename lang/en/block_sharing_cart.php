@@ -115,7 +115,9 @@ $string['conflict_description_note'] = '*Section summary formats (font color, im
 $string['restore_heavy_load_warning_message'] = 'Load time are longer, because more than 10 activities/resources are being processed.';
 $string['backup_heavy_load_warning_message'] = 'If section contains several activites, processing time will be longer.';
 $string['conflict_no_overwrite'] = 'Keep the current section name and settings <strong>"{$a}"</strong>';
+$string['conflict_no_overwrite_subsections'] = 'Keep the current section name and settings <strong>"{$a}"</strong>, all subsections will be created with default name.';
 $string['conflict_overwrite_title'] = 'Overwrite section name and settings to <strong>"{$a}"</strong>';
+$string['conflict_overwrite_title_subsections'] = 'Overwrite section name and settings to <strong>"{$a}"</strong>, all subsections will be created and named after subfolders.';
 $string['conflict_submit'] = 'Continue';
 
 $string['folder_string'] = 'Folder:';

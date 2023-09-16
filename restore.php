@@ -63,8 +63,18 @@ try {
         // Directory contains an entire section of items. Display form to let user resolve conflicts
         if (count($sections) > 0 && !$form->is_submitted()) {
 
-            $items = $DB->get_records('block_sharing_cart', array('tree' => $target, 'userid' => $USER->id));
-            $items_count = count($items);
+            // If this is flexsections course format, we restore subdirectories as subsections.
+            $format = course_get_format($courseid);
+            if ($format instanceof \format_flexsections) {
+                $params = [
+                    'tree' => $DB->sql_like_escape($target) . '%',
+                    'userid' => $USER->id,
+                ];
+                // Count items including subdirs.
+                $items_count = $DB->count_records_select('block_sharing_cart', "userid = :userid AND tree LIKE :tree AND modname != ''", $params);
+            } else {
+                $items_count = $DB->count_records('block_sharing_cart', array('tree' => $target, 'userid' => $USER->id));
+            }
 
             $dest_section = $DB->get_record('course_sections', array('course' => $courseid, 'section' => $sectionnumber));
 
