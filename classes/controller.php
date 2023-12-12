@@ -536,6 +536,7 @@ class controller {
 
             // Check empty folder name
             $foldername = str_replace("/", "-", $sectionname);
+            $foldername = empty($path) ? $foldername : $path . '/' . $foldername;
 
             if ($DB->record_exists("block_sharing_cart", array("tree" => $foldername, 'userid' => $USER->id))) {
                 // Get other folder that contain increment number
@@ -549,7 +550,6 @@ class controller {
             }
 
             // Move backup files to folder
-            $foldername = empty($path) ? $foldername : $path . '/' . $foldername;
             foreach ($itemids as $itemid) {
                 $this->movedir($itemid, $foldername);
             }
