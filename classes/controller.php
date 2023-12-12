@@ -962,7 +962,9 @@ class controller {
             $path = substr($path, 1);
         }
 
-        $cart_items = $DB->get_records('block_sharing_cart', ['tree' => $path, 'userid' => $USER->id], '', 'id');
+        $treelike = $DB->sql_like_escape($path);
+        $params = ['userid' => $USER->id, 'treelike' => $treelike . '/%', 'tree' => $path];
+        $cart_items = $DB->get_records_select('block_sharing_cart', 'userid = :userid AND (tree = :tree OR tree LIKE :treelike)', $params);
         foreach ($cart_items as $cart_item) {
             $this->delete($cart_item->id);
         }
