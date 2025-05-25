@@ -124,7 +124,7 @@ class repository extends \block_sharing_cart\app\repository
                     'parent_item_id' => $parent_item_id,
                     'old_instance_id' => $section_id,
                     'type' => entity::TYPE_SECTION,
-                    'name' => $course_format->get_section_name($section),
+                    'name' => shorten_text($course_format->get_section_name($section), 24),
                     'status' => $status,
                     'timecreated' => $time,
                     'timemodified' => $time,
@@ -151,7 +151,7 @@ class repository extends \block_sharing_cart\app\repository
 
     public function update_sharing_cart_item_with_backup_file(entity $root_item, \stored_file $file): void
     {
-        $this->db->delete_records($this->get_table(), ['parent_item_id' => $root_item->get_id()]);
+        $this->db->delete_records_select($this->get_table(), 'parent_item_id = ? AND type != ?', [$root_item->get_id(), entity::TYPE_SECTION]);
 
         $root_item->set_status(entity::STATUS_BACKEDUP);
         $root_item->set_file_id($file->get_id());

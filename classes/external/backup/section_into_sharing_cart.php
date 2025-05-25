@@ -14,6 +14,7 @@ use core_external\external_description;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
+use core_courseformat\base as course_format;
 
 class section_into_sharing_cart extends external_api
 {
@@ -61,10 +62,40 @@ class section_into_sharing_cart extends external_api
 
         $backup_task = $base_factory->backup()->handler()->backup_section($params['section_id'], $item, $settings);
 
+        $format = course_get_format($course_id);
+        // If this is flexsections course format, copy subsections.
+        if ($format instanceof \format_flexsections) {
+            // Recursively backup subsections.
+            $dependency_tasks = self::backup_subsections($item, $base_factory, $format, $settings);
+        }
+
         $return = $item->to_array();
         $return['task_id'] = $backup_task->get_id();
+        $return['dependency_task_ids'] = implode(',', $dependency_tasks);
 
         return (object)$return;
+    }
+
+    public static function backup_subsections(entity $item, factory $base_factory, course_format $format, array $settings): array
+    {
+        global $USER, $DB;
+
+        $section = $DB->get_record('course_sections', ['id' => $item->get_old_instance_id()], strictness: MUST_EXIST);
+        $subsections = $format->get_subsections($section->section);
+        $tasks = [];
+        foreach ($subsections as $subsection) {
+            $newitem = $base_factory->item()->repository()->insert_section(
+                $subsection->id,
+                $USER->id,
+                $item->get_id(),
+                entity::STATUS_AWAITING_BACKUP
+            );
+            $backup_task = $base_factory->backup()->handler()->backup_section($subsection->id, $newitem, $settings);
+            $tasks[] = $backup_task->get_id();
+            $dependency_tasks = self::backup_subsections($newitem, $base_factory, $format, $settings);
+            $tasks = array_merge($tasks, $dependency_tasks);
+        }
+        return $tasks;
     }
 
     public static function execute_returns(): external_description
@@ -76,6 +107,7 @@ class section_into_sharing_cart extends external_api
             'parent_item_id' => new external_value(PARAM_INT, 'The id of the parent item', VALUE_REQUIRED),
             'old_instance_id' => new external_value(PARAM_INT, 'The old instance id', VALUE_REQUIRED),
             'task_id' => new external_value(PARAM_INT, 'The task id of backup adhoc task', VALUE_REQUIRED),
+            'dependency_task_ids' => new external_value(PARAM_TEXT, 'The task ids of dependant adhoc tasks', VALUE_REQUIRED),
             'type' => new external_value(PARAM_TEXT, 'The type of the item', VALUE_REQUIRED),
             'name' => new external_value(PARAM_TEXT, 'The name of the item', VALUE_REQUIRED),
             'status' => new external_value(PARAM_INT, 'The status of the item', VALUE_REQUIRED),
