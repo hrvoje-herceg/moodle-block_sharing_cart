@@ -64,7 +64,8 @@ class item implements \renderable, \core\output\named_templatable
         $children = $all_item_contexts->filter(static function (object $child_item) use ($item_context) {
             return $child_item->parent_item_id === $item_context->id;
         });
-        $children->map(function (object $child) use ($all_item_contexts) {
+        $children->map(function (object $child) use ($all_item_contexts, $item_context) {
+            $child->level = $item_context->level + 1;
             $child->children = self::get_item_children($child, $all_item_contexts);
         });
 
@@ -115,6 +116,7 @@ class item implements \renderable, \core\output\named_templatable
             return $item_context->id === $this->item->get_id();
         })->first();
 
+        $root_item_context->level = 0;
         $root_item_context->children = self::get_item_children($root_item_context, $all_item_contexts);
 
         return (array)$root_item_context;

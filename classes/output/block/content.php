@@ -57,6 +57,7 @@ class content implements \renderable, \core\output\named_templatable
         });
 
         $root_item_contexts = $root_item_contexts->map(function (object $root_item_context) use ($all_item_contexts) {
+            $root_item_context->level = 0;
             $root_item_context->children = item::get_item_children($root_item_context, $all_item_contexts);
             return $root_item_context;
         });

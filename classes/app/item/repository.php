@@ -48,7 +48,7 @@ class repository extends \block_sharing_cart\app\repository
     public function get_by_parent_item_id(?int $parent_item_id): collection
     {
         return $this->map_records_to_collection_of_entities(
-            $this->db->get_records($this->get_table(), ['parent_item_id' => $parent_item_id])
+            $this->db->get_records($this->get_table(), ['parent_item_id' => $parent_item_id], 'sortorder ASC, id DESC')
         );
     }
 
