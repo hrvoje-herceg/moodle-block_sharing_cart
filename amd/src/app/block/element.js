@@ -596,6 +596,7 @@ export default class BlockElement {
                 is_module: item.type !== 'section',
                 is_section: item.type === 'section',
                 is_root: true,
+                dependency_task_ids: item.dependency_task_ids,
             }
         );
         this.#element.querySelector('.sharing_cart_items').prepend(element);

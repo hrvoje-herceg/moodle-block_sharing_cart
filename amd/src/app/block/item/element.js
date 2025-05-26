@@ -132,6 +132,7 @@ export default class ItemElement {
             methodname: 'block_sharing_cart_run_task_now',
             args: {
                 task_id: currentTarget?.dataset?.taskId ?? null,
+                dependency_task_ids: currentTarget?.dataset?.dependencyTaskIds ?? null,
             },
             done: async () => {
                 currentTarget.remove();

@@ -29,7 +29,7 @@
                 {{/status_finished}}
             {{/status_awaiting}}
             {{#has_run_now}}
-                <button class="btn btn-secondary text-nowrap" data-action="run_now" data-task-id="{{task_id}}">
+                <button class="btn btn-secondary text-nowrap" data-action="run_now" data-task-id="{{task_id}}" data-dependency-task-ids="{{dependency_task_ids}}">
                     {{#str}}run_now, block_sharing_cart{{/str}}
                 </button>
             {{/has_run_now}}

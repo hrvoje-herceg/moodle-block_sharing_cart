@@ -18,16 +18,21 @@ class run_now extends external_api
     {
         return new external_function_parameters([
             'task_id' => new external_value(PARAM_INT, '', VALUE_REQUIRED),
+            'dependency_task_ids' => new external_value(
+                PARAM_TEXT, 'Comma-separated list of dependency task IDs', VALUE_OPTIONAL, ''
+            ),
         ]);
     }
 
     public static function execute(
         int $task_id,
+        string $dependency_task_ids = ''
     ): bool {
         global $USER, $DB;
 
         $params = self::validate_parameters(self::execute_parameters(), [
             'task_id' => $task_id,
+            'dependency_task_ids' => $dependency_task_ids,
         ]);
 
         self::validate_context(
@@ -52,26 +57,27 @@ class run_now extends external_api
             );
         }
 
-        $task = $DB->get_record(
-            'task_adhoc',
-            [
-                'id' => $params['task_id'],
+        $taskids = explode(',', $params['dependency_task_ids']);
+        // Add the main task ID to the end, so it run last.
+        array_push($taskids, $params['task_id']);
+        $count = 0;
+        foreach ($taskids as $taskid) {
+            $params = [
+                'id' => (int) $taskid,
                 'component' => 'block_sharing_cart',
                 'faildelay' => 0,
                 'timestarted' => null,
                 'userid' => $USER->id
-            ]
-        );
-
-        if (!$task) {
-            return false;
+            ];
+            if ($DB->record_exists('task_adhoc', $params)) {
+                $count++;
+                ob_start();
+                \core\task\manager::run_adhoc_from_cli((int) $taskid);
+                ob_end_clean();
+            }
         }
 
-        ob_start();
-        \core\task\manager::run_adhoc_from_cli($task->id);
-        ob_end_clean();
-
-        return true;
+        return (bool) $count;
     }
 
     public static function execute_returns(): external_description
