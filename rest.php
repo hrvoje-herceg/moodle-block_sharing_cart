@@ -40,7 +40,7 @@ try {
     );
 
     $controller = new controller();
-    $is_async = get_config('block_sharing_cart', 'backup_mode') === 'async';
+    $is_async = false;
 
     switch (required_param('action', PARAM_TEXT)) {
         case 'render_tree':

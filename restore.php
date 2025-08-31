@@ -44,7 +44,7 @@ require_login($courseid);
 
 try {
 
-    $is_async = get_config('block_sharing_cart', 'restore_mode') === 'async';
+    $is_async = false;
     $controller = new controller();
 
     // Trying to restore a directory of items
