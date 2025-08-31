@@ -113,7 +113,7 @@ class controller {
      * @global moodle_database $DB
      * @global object $USER
      */
-    public function render_tree(int $userid = null): string {
+    public function render_tree(?int $userid = null): string {
         global $DB, $USER;
 
         require_once __DIR__ . '/renderer.php';
@@ -1068,7 +1068,7 @@ class controller {
      * @param string|null $sesskey = \required_param('sesskey', PARAM_RAW)
      * @throws exception
      */
-    public static function validate_sesskey(string $sesskey = null): void {
+    public static function validate_sesskey(?string $sesskey = null): void {
         try {
             if (confirm_sesskey($sesskey)) {
                 return;
