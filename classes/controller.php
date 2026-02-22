@@ -143,8 +143,8 @@ class controller {
 
         // sort tree nodes and leaves
         $showdirslast = get_config('block_sharing_cart', 'show_directories_last');
-        $sort_node = static function(array &$node) use (&$sort_node, $showdirslast) {
-            uksort($node, static function($lhs, $rhs) use ($showdirslast) {
+        $sort_node = static function(array &$node, int $level = 0) use (&$sort_node, $showdirslast) {
+            uksort($node, static function($lhs, $rhs) use ($showdirslast, $level) {
                 // Items first, then directories
                 if ($lhs === '') {
                     return $showdirslast == 1 ? -1 : 1;
@@ -152,11 +152,15 @@ class controller {
                 if ($rhs === '') {
                     return $showdirslast == 1 ? 1 : -1;
                 }
-                return strnatcasecmp($lhs, $rhs);
+                if ($level === 0) {
+                    // Only sort directories alphabetically at the top level.
+                    return strnatcasecmp($lhs, $rhs);
+                }
+                return 0;
             });
             foreach ($node as $name => &$leaf) {
                 if ($name !== '') {
-                    $sort_node($leaf);
+                    $sort_node($leaf, $level + 1);
                 } else {
                     usort($leaf, static function($lhs, $rhs) {
                         if ($lhs->weight < $rhs->weight) {
@@ -850,7 +854,7 @@ class controller {
             ];
             // Find uniqie direct subdirectories.
             $folders = $DB->get_recordset_select(record::TABLE, 'userid = :userid AND tree LIKE :tree',
-                $params, '', 'DISTINCT tree, section');
+                $params, 'id', 'DISTINCT tree, section');
             foreach ($folders as $folder) {
                 $matches = [];
                 $pattern = '/^' . preg_quote($path, '/') . '\/([^\/]+)$/';
