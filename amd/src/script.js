@@ -1192,11 +1192,12 @@ export const init = function(addMethod) {
                     $.on_backup(e, activityName);
                 });
 
-                const $actionMenuItem = $activity.find('.action-menu.section-cm-edit-actions').parent('.actions');
+               const $actionMenuItem = $activity.find('[data-region="actionmenu"] .menubar');
 
-                if (!$actionMenuItem.find('.add-to-sharing-cart').length) {
+                if ($actionMenuItem.length && !$actionMenuItem.find('.add-to-sharing-cart').length) {
                     $actionMenuItem.append($backupIcon);
                 }
+						
             }
 
             /**

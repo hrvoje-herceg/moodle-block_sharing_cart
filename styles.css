@@ -157,3 +157,9 @@
         transform: rotate(0deg);
     }
 }
+
+.add-to-sharing-cart {
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}	
