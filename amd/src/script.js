@@ -1282,7 +1282,7 @@ export const init = function(addMethod) {
             basketButton.append(basket);
 
             const dropAreaText = document.createElement('p');
-            dropAreaText.setAttribute('class', 'font-weight-bold text-white');
+            dropAreaText.setAttribute('class', 'fw-bold text-white');
             dropAreaText.innerText = str('drop_here');
 
             const dropArea = document.createElement('div');

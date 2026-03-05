@@ -53,7 +53,7 @@
 }
 
 .block_sharing_cart span.commands {
-    margin-left: auto;
+    margin-inline-start: auto;
     display: flex;
     align-items: center;
 }
@@ -70,7 +70,7 @@
     box-sizing: border-box;
     padding: 5px 25px 5px 5px;
     width: 150px;
-    margin-left: 5px;
+    margin-inline-start: 5px;
 }
 
 .block_sharing_cart span.commands form input:focus {
@@ -159,7 +159,7 @@
 .block_sharing_cart .footer form select {
     min-width: 0;
     width: 100%;
-    margin-right: 10px;
+    margin-inline-end: 10px;
 }
 
 .block_sharing_cart .footer form input {
@@ -186,7 +186,7 @@
     display: flex;
     flex-direction: column;
     margin-top: 20px;
-    margin-left: 16px;
+    margin-inline-start: 16px;
 }
 /* MODAL END */
 
@@ -202,13 +202,13 @@
 /* BULK VIEW START */
 .block_sharing_cart .bulk-delete-list {
     list-style: none;
-    padding-left: 10px;
+    padding-inline-start: 10px;
 }
 
 .block_sharing_cart .bulk-delete-select-all {
     display: flex;
-    padding-left: 20px;
-    margin-right: 10px;
+    padding-inline-start: 20px;
+    margin-inline-end: 10px;
 }
 
 .block_sharing_cart .bulk-delete-item {
@@ -218,7 +218,7 @@
 }
 
 .block_sharing_cart .bulk-delete-item label {
-    text-align: left;
+    text-align: start;
 }
 
 .block_sharing_cart .bulk-delete-item:last-of-type {
@@ -247,5 +247,5 @@
 
 /* IKKE VORES - RYD OP */
 .block_sharing_cart .header-commands img {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
 }
