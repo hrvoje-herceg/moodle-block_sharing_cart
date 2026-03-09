@@ -872,7 +872,7 @@ export const init = function(addMethod) {
             } else {
                 dirs.unshift('/');
 
-                const $select = $('<select class="custom-select" name="to"/>');
+                const $select = $('<select class="form-select" name="to"/>');
                 for (let i = 0; i < dirs.length; i++) {
                     $select.append($('<option/>').val(dirs[i]).append(dirs[i]));
                 }
