@@ -852,9 +852,9 @@ class controller {
                 'tree' => $DB->sql_like_escape($path) . '/%',
                 'userid' => $USER->id,
             ];
-            // Find uniqie direct subdirectories.
+            // Find unique direct subdirectories.
             $folders = $DB->get_recordset_select(record::TABLE, 'userid = :userid AND tree LIKE :tree',
-                $params, 'id', 'DISTINCT tree, section');
+                $params, 'tree', 'tree, section');
             foreach ($folders as $folder) {
                 $matches = [];
                 $pattern = '/^' . preg_quote($path, '/') . '\/([^\/]+)$/';

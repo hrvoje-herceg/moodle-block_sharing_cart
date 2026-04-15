@@ -110,7 +110,7 @@ class section_title_form extends \moodleform {
                 ];
                 // Find uniqie direct subdirectories.
                 $folders = $DB->get_recordset_select('block_sharing_cart', 'userid = :userid AND tree LIKE :tree',
-                    $params, '', 'DISTINCT tree, section');
+                    $params, 'tree', 'tree, section');
                 foreach ($folders as $folder) {
                     $matches = [];
                     $pattern = '/^' . preg_quote($path, '/') . '\/([^\/]+)$/';
