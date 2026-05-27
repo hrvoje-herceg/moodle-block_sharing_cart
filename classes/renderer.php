@@ -116,6 +116,9 @@ class renderer {
         $is_ready = true;
         if (isset($leaf[''])) {
             foreach ($leaf[''] as $item) {
+                if (!$item->modname) { // Skip empty placeholder items (see issue-83)
+                    continue;
+                }
                 $coursefullnames[] = $item->coursefullname;
                 if (!isset($item->fileid) || $item->fileid < 1) {
                     $is_ready = false;
